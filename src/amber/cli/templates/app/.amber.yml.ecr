@@ -6,6 +6,12 @@ model: <%= @model %>
 # list of tasks to be run by `amber watch`
 watch:
   # NOTE: names that match crystal commands are special (e.g. run, spec)
+  npm:
+    build_commands:
+      - npm install --loglevel=error
+      - npm run build
+    run_commands:
+      - npm run watch
   run:
     # commands will be joined with && (join them yourself if need || or ;)
     build_commands:
@@ -16,6 +22,7 @@ watch:
     include:
       - ./config/**/*.cr
       - ./config/environments/*.yml
+      - ./config/asset_manifest.json
       - ./src/**/*.cr
       - ./src/**/*.ecr
       <%- if @language == "slang" -%>

@@ -1,5 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -9,9 +11,9 @@ let config = {
     main: path.resolve(__dirname, 'entry.js')
   },
   output: {
-    filename: '[name].bundle.js',
+    filename: '[name]-[hash].bundle.js',
     path: path.resolve(__dirname, '../../public/dist'),
-    publicPath: '/dist'
+    publicPath: '/dist/'
   },
   resolve: {
     alias: {
@@ -30,20 +32,6 @@ let config = {
         ]
       },
       {
-        test: /\.(png|svg|jpg|gif)$/,
-        exclude: /node_modules/,
-        use: [
-          'file-loader?name=/images/[name].[ext]'
-        ]
-      },
-      {
-        test: /\.(woff|woff2|eot|ttf|otf)$/,
-        exclude: /node_modules/,
-        use: [
-          'file-loader?name=/[name].[ext]'
-        ]
-      },
-      {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
@@ -56,10 +44,17 @@ let config = {
     ]
   },
   plugins: [
+    new CleanWebpackPlugin([path.resolve(__dirname, '../../public/dist')], {
+      allowExternal: true
+    }),
+    new ManifestPlugin({
+      fileName: '../../config/asset_manifest.json',
+      publicPath: '/dist/',
+      writeToFileEmit: true
+    }),
     new MiniCssExtractPlugin({
       filename: '[name].bundle.css'
     }),
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       title: 'Caching',
     }),
